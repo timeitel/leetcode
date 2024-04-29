@@ -1,8 +1,3 @@
-const l1 = { val: 1, next: null };
-const l2 = { val: 5, next: { val: 6, next: { val: 4, next: null } } };
-
-addTwoNumbers(l1, l2);
-
 /**
  * Definition for singly-linked list.
  * function ListNode(val, next) {
@@ -16,43 +11,31 @@ addTwoNumbers(l1, l2);
  * @return {ListNode}
  */
 function addTwoNumbers(l1, l2) {
-  const l1Value = getListValue(l1);
-  const l2Value = getListValue(l2);
+  const node = new ListNode();
+  let ref = node;
+  let carry = 0;
 
-  return toNode(l1Value + l2Value);
-}
+  while (l1 || l2) {
+    let sum = carry;
 
-/**
- * @param {number} value
- */
-function toNode(value) {
-  const chars = value.toString().split("").reverse();
-  let node = {};
-  node.val = Number(chars.pop());
-  node.next = null;
+    if (l1) {
+      sum += l1.val;
+      l1 = l1.next;
+    }
 
-  while (chars.length > 0) {
-    const nextNode = {};
-    nextNode.val = Number(chars.pop());
-    nextNode.next = node;
-    node = nextNode;
+    if (l2) {
+      sum += l2.val;
+      l2 = l2.next;
+    }
+
+    carry = Math.floor(sum / 10);
+    ref.next = new ListNode(sum % 10);
+    ref = ref.next;
   }
 
-  return node;
-}
-
-function getListValue(node) {
-  let nodeRef = node;
-  let remaining = true;
-  let value = "";
-
-  while (remaining) {
-    value = nodeRef.val + value;
-
-    if (nodeRef.next === null) remaining = false;
-
-    nodeRef = nodeRef.next;
+  if (carry > 0) {
+    ref.next = new ListNode(carry);
   }
 
-  return Number(value);
+  return node.next;
 }
